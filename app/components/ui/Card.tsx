@@ -1,7 +1,8 @@
-"use client";
+import React from "react";
+import styles from "./card.module.css";
 
-import styled from "styled-components";
+type Props = {};
 
-export default styled.div`
-  border-radius: 10px;
-`;
+export default function Card({}: Props) {
+  return <div className={styles.card}>Card</div>;
+}

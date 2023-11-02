@@ -1,0 +1,11 @@
+.stack {
+  position: relative;
+}
+
+.stack > * {
+  position: absolute;
+}
+
+.align {
+  display: flex;
+}

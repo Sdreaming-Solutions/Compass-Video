@@ -1,0 +1,37 @@
+:root {
+  --colors-primary-100: "#67BDFF";
+  --colors-primary-200: "#068DFF";
+  --colors-primary-300: "#037AEB";
+  --colors-primary-400: "#0063E5";
+  --colors-primary-500: "#00386C";
+  --colors-secondary: "#02E7F5";
+  --colors-accent: "#FFFFFF";
+  --colors-neutral--100: "#FFFFFF";
+  --colors-neutral-100: "#F9F9F9";
+  --colors-neutral-200: "#C8C9CB";
+  --colors-neutral-300: "#74757D";
+  --colors-neutral-400: "#5F6169";
+  --colors-neutral-500: "#30333E";
+  --colors-neutral-600: "#1A1D29";
+  --colors-neutral-700: "#101116";
+  --colors-opacity-04: "#F9F9F966";
+  --colors-opacity-10: "#0000001A";
+  --colors-opacity-12: "#FFFFFF1F";
+  --colors-opacity-white-10: "#FFFFFF1A";
+  --colors-applications-link: var(--colors-primary-100);
+  --colors-applications-highEmphasis: var(--colors-neutral-100);
+  --colors-applications-mediumEmphasis: var(--colors-neutral-200);
+  --colors-applications-disabled: var(--colors-neutral-400);
+  --colors-applications-background: var(--colors-neutral-600);
+  --colors-applications-border: var(--colors-opacity-12);
+  --colors-applications-hoverButtonOutline: var(--colors-opacity-10);
+  --typography-h1: bold 44px;
+  --typography-h2: bold 32px;
+  --typography-h3: bold 24px;
+  --typography-h4: bold 20px;
+  --typography-bodyLarge: normal 20px;
+  --typography-bodyReview: normal 16px;
+  --typography-bodySmall: normal 14px;
+  --typography-caption: normal 12px;
+  --typography-button: bold 16px;
+}

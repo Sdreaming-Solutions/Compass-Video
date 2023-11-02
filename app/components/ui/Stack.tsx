@@ -1,18 +1,22 @@
-"use client";
+import React from "react";
+import styles from "./Stack.module.css";
 
-import styled from "styled-components";
+type Props = { align?: { horizontally?: string; vertically?: string } };
 
-type Props = {
-  $align?: { horizontally?: string; vertically?: string };
-};
+export default function Stack({
+  align,
+  children,
+}: React.PropsWithChildren<Props>) {
+  const alignCss = {
+    justifyContent: align?.horizontally,
+    alignItems: align?.vertically,
+  };
 
-export default styled.div<Props>`
-  position: relative;
-  display: ${(props) => (props.$align ? "flex" : "block")};
-  justify-content: ${(props) => props.$align?.horizontally || "initial"};
-  align-items: ${(props) => props.$align?.vertically || "initial"};
-
-  & > * {
-    position: absolute;
-  }
-`;
+  return (
+    <div
+      className={`${styles.stack} ${align && styles.align}`}
+      style={{ ...alignCss }}>
+      {children}
+    </div>
+  );
+}
