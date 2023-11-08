@@ -17,27 +17,17 @@ type Props = { searchParams: { [key: string]: string | string[] | undefined } };
 export default function LoginPage({ searchParams }: Props) {
   const router = useRouter();
   const dispatch = useDispatch();
-  useLogin();
+  const { values, actions, helpers } = useLogin();
 
   useEffect(() => {
-    if (searchParams["request_token"]) {
-      dispatch(actions.users.login(searchParams["request_token"]));
-      router.replace("/home");
+    if (values.user) {
+      router.push("/home");
+    } else {
+      if (searchParams["request_token"]) {
+        dispatch(actions.login(searchParams["request_token"] as string));
+      }
     }
-  }, [dispatch, router, searchParams]);
-
-  async function authenticate() {
-    try {
-      const requestToken = (await tmdb.get("authentication/token/new"))[
-        "request_token"
-      ];
-      router.replace(
-        `/login/${requestToken}?redirect_to=http://localhost:3000`
-      );
-    } catch (error) {
-      console.log(error);
-    }
-  }
+  }, [actions, dispatch, router, searchParams, values.user]);
 
   return (
     <main className={styles.main}>
@@ -46,11 +36,14 @@ export default function LoginPage({ searchParams }: Props) {
         <p className={styles.subtitle}>
           Acesse sua conta para ver nossos títulos
         </p>
-        <Button className={styles.button} onClick={authenticate}>
+        <button className={styles.button} onClick={helpers.auth}>
           Iniciar sessão com TMDB
-        </Button>
+        </button>
         <p className={styles.guest}>
-          Não tem conta? <Link href="/home">Acesse como convidado</Link>
+          Não tem conta?{" "}
+          <button onClick={() => dispatch(actions.loginAsGuest())}>
+            Acesse como convidado
+          </button>
         </p>
         <Image src={compass} alt="Compass Logo" className={styles.compass} />
       </Card>

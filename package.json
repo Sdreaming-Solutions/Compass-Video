@@ -20,6 +20,7 @@
     "react-router-dom": "^6.18.0",
     "react-youtube": "^10.1.0",
     "redux-logger": "^3.0.6",
+    "redux-thunk": "^2.4.2",
     "swiper": "^11.0.3",
     "swiper-react": "^1.0.0"
   },

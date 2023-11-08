@@ -1,21 +1,33 @@
-import { useSearchParams } from "react-router-dom";
+import { useRouter } from "next/navigation";
 import { actions, useDispatch, useSelector } from "../../store";
 import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import tmdb from "../tmdb";
 
 export default function useLogin() {
   const router = useRouter();
   const dispatch = useDispatch();
-  const sessionId = useSelector((state) => state.users.sessionId);
+  const users = useSelector((state) => state.users);
 
   useEffect(() => {
-    const localSessionId = localStorage.getItem("sessionId");
+    dispatch(actions.users.loadUsers());
+  }, [dispatch]);
 
-    if (localSessionId) {
-      dispatch(actions.users.login(localSessionId));
-      router.replace("/home");
+  async function authenticate() {
+    try {
+      const requestToken = (await tmdb.get("authentication/token/new"))[
+        "request_token"
+      ];
+      router.replace(
+        `/login/${requestToken}?redirect_to=http://localhost:3000`
+      );
+    } catch (error) {
+      console.log(error);
     }
-  }, [dispatch, router]);
+  }
 
-  return sessionId;
+  return {
+    values: { ...users },
+    actions: { ...actions.users },
+    helpers: { auth: authenticate },
+  };
 }

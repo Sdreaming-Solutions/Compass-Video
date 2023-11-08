@@ -54,6 +54,9 @@
   inline-size: 100%;
   max-inline-size: 375px;
   text-transform: uppercase;
+  color: $neutral-100;
+  font: $typography-button;
+  border-radius: 4px;
   @include button($primary-300, transparent);
 }
 
@@ -77,7 +80,7 @@
   color: #ffffff99;
 }
 
-.guest a {
+.guest button {
   all: unset;
   cursor: pointer;
   color: white;

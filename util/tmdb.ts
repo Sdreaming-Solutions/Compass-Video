@@ -31,6 +31,21 @@ export class TMDB {
     );
   }
 
+  async post(path: string, body: any) {
+    const url = new URL(path, this.baseURL);
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { ...this.headers, "content-type": "application/json" },
+      body: JSON.stringify(body),
+    });
+    console.log(res.body);
+
+    if (!res.ok)
+      throw { message: `Could not post to ${url}`, status: res.status };
+
+    return res.json();
+  }
+
   private extractCommon(res: any) {
     return {
       adult: res.adult,
@@ -131,12 +146,12 @@ export class TMDB {
   }
 
   private async getMediaList(type: string, ref: string) {
-    const mediadata = await this.get(`${type}/${ref}?language=en-US&page=1`).then(
-      (data) => data.results
-    );
-    let typeMedia = "movie"
-    if(type === "tv"){
-      typeMedia = "series"
+    const mediadata = await this.get(
+      `${type}/${ref}?language=en-US&page=1`
+    ).then((data) => data.results);
+    let typeMedia = "movie";
+    if (type === "tv") {
+      typeMedia = "series";
     }
     return (async () =>
       (await mediadata).map((media: Media) => ({
@@ -144,7 +159,6 @@ export class TMDB {
         type: typeMedia,
       })))() as Promise<Media[]>;
   }
-
 
   newMedia(path: string) {
     return this.get(

@@ -8,8 +8,8 @@ import { usePathname } from "next/navigation";
 
 type Props = {
   href: Url;
-  current: string;
-  icon: React.FC<React.SVGAttributes<SVGElement>>;
+  current?: string;
+  icon?: React.FC<React.SVGAttributes<SVGElement>>;
 };
 
 export default function Navlink({
@@ -22,9 +22,9 @@ export default function Navlink({
     <Link
       href={href}
       className={`${styles.navlink} ${
-        current.startsWith(href.toString()) ? styles.active : ""
+        current?.startsWith(href.toString()) ? styles.active : ""
       }`}>
-      <Icon />
+      {Icon && <Icon />}
       {children}
     </Link>
   );
