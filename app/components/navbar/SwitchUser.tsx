@@ -1,10 +1,10 @@
-import Image from "next/image";
+import Image, { StaticImageData } from "next/image";
 import styles from "./Users.module.scss";
 import { actions, useDispatch, useSelector } from "@/store";
 import Plus from "@/public/icons/plus.svg";
-import { User } from "@/store/slices/users";
 import { useRouter } from "next/navigation";
 import tmdb from "@/util/tmdb";
+import avatarImage from "@/public/default-avatar/1.png";
 
 type Props = { isOpen: boolean };
 
@@ -16,8 +16,8 @@ export default function SwitchUser({ isOpen }: Props) {
     (i) => i.session.id !== users.user?.session.id
   );
 
-  const avatars = users.users.map((i) => {
-    let avatar = `/default-avatar/${Math.floor(Math.random() * 2 + 1)}`;
+  const avatars = otherUsers.map((i) => {
+    let avatar: StaticImageData | string = avatarImage;
     if (i.avatar?.gravatar.hash) {
       avatar = `https://gravatar.com/avatar/${i.avatar.gravatar.hash}?s=45`;
       if (i.avatar.tmdb.avatar_path) {
@@ -25,8 +25,8 @@ export default function SwitchUser({ isOpen }: Props) {
           `https://image.tmdb.org/t/p/w45${i.avatar.tmdb.avatar_path}`
         )}`;
       }
-      return avatar;
     }
+    return avatar;
   });
 
   function softLogout() {

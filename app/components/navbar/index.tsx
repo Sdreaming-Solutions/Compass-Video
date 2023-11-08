@@ -106,7 +106,7 @@ export default function Navbar({}: Props) {
           </>
         )}
         {values.user ? (
-          <>
+          <div style={{ position: "relative" }}>
             <button
               className={styles.avatar}
               onClick={() => setIsUsersOpen((prev) => !prev)}>
@@ -119,7 +119,7 @@ export default function Navbar({}: Props) {
               />
             </button>
             <SwitchUser isOpen={isUsersOpen} />
-          </>
+          </div>
         ) : (
           <Navlink href="/">Login</Navlink>
         )}

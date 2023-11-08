@@ -9,10 +9,10 @@
   border-radius: 8px;
   block-size: 0;
   transition: all 300ms;
-  inset-inline-end: 33px;
+  inset-inline-end: 0;
   margin: 0;
   overflow: hidden;
-  inset-block-start: 100%;
+  inset-block-start: 130%;
   background: $neutral-700;
   padding-inline: 20px;
   padding-block: 0;
@@ -66,6 +66,10 @@
     font: $typography-body-review;
     color: rgba(255, 255, 255, 0.8);
     text-wrap: nowrap;
+
+    img {
+      border-radius: 50px;
+    }
 
     &:hover {
       background-color: $neutral-600;
