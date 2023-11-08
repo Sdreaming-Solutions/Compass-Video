@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import styles from "./PlayerShow.module.scss";
 import PlayerControls from "./PlayerControls";
 import YouTube from "react-youtube";
-
+import { useSearchParams } from "next/navigation";
 
 const ShowPlayer: React.FC = () => {
   const [player, setPlayer] = useState<any>(null);
@@ -13,7 +13,10 @@ const ShowPlayer: React.FC = () => {
   const [videoInfo, setVideoInfo] = useState({ title: "", description: "" });
   const [isFullScreen, setIsFullScreen] = useState(false);
 
-  const videoId = "kBTpF8oYxL4";
+  const searchParams = useSearchParams();
+  const id = searchParams.get("id");
+  const tipo = searchParams.get("tipo");
+  const [videoKey, setVideoKey] = useState<string>("");
 
   const goBack = () => {
     window.history.back();
@@ -58,8 +61,8 @@ const ShowPlayer: React.FC = () => {
       if (playerElement) {
         playerElement.requestFullscreen();
       }
+      setIsFullScreen(!isFullScreen);
     }
-    setIsFullScreen(!isFullScreen);
   };
 
   const opts = {
@@ -69,26 +72,47 @@ const ShowPlayer: React.FC = () => {
       controls: 0,
       modestbranding: 1,
       rel: 0,
+      origin: window.location.origin, // Define a origem como a do seu aplicativo
     },
   };
 
+  // Dentro do bloco useEffect
   useEffect(() => {
-    if (player) {
-      setDuration(player.getDuration() - 1);
-      setCurrentTime(player.getCurrentTime());
+    if (id && tipo) {
+      const apiKey = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxOTUzYjk2MmY2Nzg2MGY2NjAxMjc4YTE1ZDdjNmVkMSIsInN1YiI6IjY1NDRlODAyNmJlYWVhMDEwYjMyNGVkYyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.EWLmbWqxpkl0X_f3SicwD20Jee8zD-jls2pKLq6Qohs"; // Substitua pela sua chave de API do TMDB
+      let baseUrl = "";
 
-      fetchVideoInfo(videoId);
+      if (tipo === "movie") {
+        baseUrl = `https://api.themoviedb.org/3/movie/${id}/videos`;
+      } else if (tipo === "tv") {
+        baseUrl = `https://api.themoviedb.org/3/tv/${id}/videos`;
+      }
 
-      const timer = setInterval(() => {
-        setCurrentTime(player.getCurrentTime());
-      }, 1000);
-      return () => clearInterval(timer);
+      const url = `${baseUrl}?api_key=${apiKey}`;
+
+      const fetchVideoKey = async () => {
+        try {
+          const response = await fetch(url);
+          if (response.ok) {
+            const data = await response.json();
+            // Verifique se há resultados de vídeo e obtenha a chave do trailer
+            if (data.results && data.results.length > 0) {
+              const trailerKey = data.results[0].key;
+              setVideoKey(trailerKey);
+            }
+          }
+        } catch (error) {
+          console.error("Erro ao buscar a chave do vídeo:", error);
+        }
+      };
+
+      fetchVideoKey();
     }
-  }, [player, videoId]);
+  }, [id, tipo]);
 
-  const fetchVideoInfo = (videoId: string) => {
-    const apiKey = "AIzaSyCdvi-PCCAClNngx1OTH-3uoxggXvEhNpA";
-    const apiUrl = `https://www.googleapis.com/youtube/v3/videos?part=snippet&id=${videoId}&key=${apiKey}`;
+  const fetchVideoInfo = (videoKey: string) => {
+    const apiKey = "AIzaSyCdvi-PCCAClNngx1OTH-3uoxggXvEhNpA"; // Substitua pela sua chave de API do YouTube Data API v3
+    const apiUrl = `https://www.googleapis.com/youtube/v3/videos?part=snippet&id=${videoKey}&key=${apiKey}`;
 
     fetch(apiUrl)
       .then((response) => response.json())
@@ -116,13 +140,18 @@ const ShowPlayer: React.FC = () => {
       });
   };
 
+  useEffect(() => {
+    if (videoKey) {
+      fetchVideoInfo(videoKey);
+    }
+  }, [videoKey]);
+
   return (
     <div className={styles.playerShow}>
       <div className={styles.header}>
         <button className={styles.backButton} onClick={goBack}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
-
             viewBox="0 0 48 48"
             fill="none"
           >
@@ -138,25 +167,25 @@ const ShowPlayer: React.FC = () => {
         </div>
       </div>
       <div className={styles.videoContainer}>
-      <div className={styles.controlsContainer}>
-        <PlayerControls
-          pauseVideo={togglePlay}
-          seekForward={seekForward}
-          backForward={backForward}
-          duration={duration}
-          currentTime={currentTime}
-          toggleFullScreen={toggleFullScreen}
+        <div className={styles.controlsContainer}>
+          <PlayerControls
+            pauseVideo={togglePlay}
+            seekForward={seekForward}
+            backForward={backForward}
+            duration={duration}
+            currentTime={currentTime}
+            toggleFullScreen={toggleFullScreen}
+          />
+        </div>
+        <YouTube
+          videoId={videoKey}
+          opts={opts}
+          onReady={(event) => {
+            setPlayer(event.target);
+          }}
+          id="player"
         />
       </div>
-      <YouTube
-        videoId={videoId}
-        opts={opts}
-        onReady={(event) => {
-          setPlayer(event.target);
-        }}
-        id="player"
-      />
-    </div>
     </div>
   );
 };
