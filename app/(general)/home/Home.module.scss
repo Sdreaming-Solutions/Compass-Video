@@ -2,4 +2,8 @@
 
 .maincontent {
   overflow: hidden;
+  display: flex;
+  gap: 56px;
+  flex-direction: column;
+  padding-bottom: 5%;
 }

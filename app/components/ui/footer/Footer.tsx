@@ -3,7 +3,7 @@ import styles from './Footer.module.scss';
 export default function Footer() {
   return (
     <footer className={styles.footerSite}>
-      <img className={styles.logoFooter} src="/compass_logo.png" alt="Logo Compass Uol" />
+      <img className={styles.logoFooter} src="/compass.png" alt="Logo Compass Uol" />
       <nav className={styles.navFooter}>
         <a href="#">Política de privacidade</a>
         <a href="#">Acuerdo de suscripción</a>

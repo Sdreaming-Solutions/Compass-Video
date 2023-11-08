@@ -1,0 +1,39 @@
+.maincontent {
+  width: 100%;
+  padding-bottom: 8%;
+  overflow: hidden;
+  gap: 2%;
+
+  h2{
+    color: #fff;
+    font: bold 20px var(--font-montserrat);
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+  }
+}
+
+.actor{
+    display: flex;
+    justify-items: center;
+    flex-direction: column;
+    align-items: center;
+}
+
+.content {
+  width: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  padding-left: 5%;
+  flex-direction: row-reverse;
+  gap: 2%;
+}
+
+.actorimage {
+  width: 238px;
+  height: auto;
+  border-radius: 8px;
+  transition: all 0.2s;
+}

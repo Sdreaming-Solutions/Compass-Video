@@ -17,9 +17,9 @@ type Props = {
 export default function Details({ item, buttons }: Props) {
   const ref = useClamp(item);
   const itemRelease = item.release_date || item.first_air_date;
-  const itemDuration = item.runtime
+  let itemDuration = item.runtime
     ? `${Math.floor(item.runtime / 60)} h ${item.runtime % 60} m`
-    : `${item.number_of_episodes} Episodes`;
+    : `${item.number_of_episodes && item.number_of_episodes + " Episodes"}`;
 
   const buttonElements = {
     watch: (
@@ -60,12 +60,12 @@ export default function Details({ item, buttons }: Props) {
   return (
     <div className={styles.info}>
       <hgroup>
-        <h1>{item.title || item.name}</h1>
+        <h1>{item.title || item.name || item.original_name}</h1>
         <p className={styles.release}>
           {itemRelease?.slice(0, 4)} • {itemDuration}
         </p>
         <p className={styles.genres}>
-          {item.genres.map((i) => i.name).join(", ")}
+          {item.genres && item.genres.map((i) => i.name).join(", ")}
         </p>
         <p ref={ref} className={styles.overview}>
           {item.overview}

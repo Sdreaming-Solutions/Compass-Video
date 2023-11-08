@@ -21,6 +21,7 @@ export interface Media {
   origin_country?: string[];
   season_number?: number;
   show_id?: number;
+  media_type?: string;
   type: Type;
 }
 
@@ -56,7 +57,14 @@ export interface Episode{
   type: Type;
 }
 
+export interface Person{
+  id: number;
+  name: string;
+  profile_path: string;
+  popularity: number;  
+}
+
 export interface Season extends Media{
   episodes: Episode[],
-  _id:number,
+  id:number,
 }

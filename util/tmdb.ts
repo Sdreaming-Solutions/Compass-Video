@@ -1,4 +1,4 @@
-import { Media, Season, Series, DetailedMedia, Type, Episode } from "./model";
+import { Media, Series, DetailedMedia, Person } from "./model";
 
 export class TMDB {
   static instance?: TMDB;
@@ -29,6 +29,28 @@ export class TMDB {
     return this.get(`${media}/popular?language=en-US&page=1`).then(
       (data) => data.results
     );
+  }
+
+  private trendingMedia(type: string) {
+    return this.get(`trending/${type}/week?language=en-US`).then(
+      (data) => data.results
+    );
+  }
+
+  get trendingMovies() {
+    return (async () =>
+      (await this.trendingMedia("movie")).map((movie: Media) => ({
+        ...movie,
+        type: "movie",
+      })))() as Promise<Media[]>;
+  }
+
+  get trendingSeries() {
+    return (async () =>
+      (await this.trendingMedia("tv")).map((movie: Media) => ({
+        ...movie,
+        type: "series",
+      })))() as Promise<Media[]>;
   }
 
   async post(path: string, body: any) {
@@ -218,21 +240,46 @@ export class TMDB {
   }
 
   async getSerie(id: number) {
-    try {
-      const res = await this.get(`tv/${id}?language=en-US`);
-      const seriedata: Series = {
-        ...this.extractCommon(res),
-        number_of_seasons: res.number_of_seasons,
-        seasons: res.seasons,
-        name: res.name,
-        origin_country: res.origin_country,
-        type: "series",
-      };
-      return seriedata;
-    } catch (error) {
-      console.error("Error getSeasonInfo", error);
-      return null;
-    }
+    const res = await this.get(`tv/${id}?language=en-US`);
+    const seriedata: Series = {
+      ...this.extractCommon(res),
+      number_of_seasons: res.number_of_seasons,
+      seasons: res.seasons,
+      name: res.name,
+      origin_country: res.origin_country,
+      type: "series",
+    };
+    return seriedata;
+  }
+
+  async getCreditsActor(id: number) {
+    const data = await this.get(`person/${id}/combined_credits?language=en-US`);
+    const credits = data.cast.map((media: Media) => ({
+      ...this.extractCommon(media),
+      type: media.media_type === "tv" ? "series" : media.media_type,
+    }));
+    return credits
+      .sort((a: Media, b: Media) => b.popularity - a.popularity)
+      .slice(0, 20);
+  }
+
+  async getPeopleList(): Promise<Person[]> {
+    const data = await this.get(`trending/person/week?language=en-US`);
+    const people = data.results.map((person: Person) => ({
+      id: person.id,
+      name: person.name || "",
+      profile_path: person.profile_path || "",
+      popularity: person.popularity,
+    }));
+
+    return people.slice(4, 8);
+    //.sort((a: Media, b: Media) => b.popularity - a.popularity)
+  }
+
+  async getKeyVideo(id: number, type: string) {
+    return this.get(`${type}/${id}/videos?language=en-US`).then(
+      (data) => data.results
+    );
   }
 
   private similarMedia(media: string, id: number) {
@@ -253,6 +300,40 @@ export class TMDB {
         ...series,
         type: "movie",
       })))() as Promise<Media[]>;
+  }
+
+  async search(type: string, value: string) {
+    switch (type) {
+      case "Tudo":
+        type = "multi";
+        break;
+      case "Filmes":
+        type = "movie";
+        break;
+      case "Coleções":
+        type = "collection";
+        break;
+      case "Séries":
+        type = "tv";
+        break;
+      case "Celebridades":
+        type = "person";
+        break;
+    }
+
+    const res = (
+      await this.get(
+        `search/${type}?query=${value}&include_adult=false&language=en-US&page=1`
+      )
+    ).results;
+
+    return res.map((item: any) => {
+      if (type === "multi") {
+        return item;
+      } else {
+        return { ...item, media_type: type };
+      }
+    });
   }
 }
 

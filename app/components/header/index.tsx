@@ -17,7 +17,7 @@ export default function Header({ item, autoUpdate, buttons }: Props) {
   if (autoUpdate) item = dynamic;
   const backgroundImage = item.backdrop_path
     ? `url(https://image.tmdb.org/t/p/w1280${item.backdrop_path})`
-    : `url(default-banner/${Math.round(Math.random() * 4 + 1)}.gif)`;
+    : `url(/default-banner/${Math.round(Math.random() * 4 + 1)}.gif)`;
 
   return (
     <header

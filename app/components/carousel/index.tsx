@@ -118,10 +118,9 @@ export default function Carousel({
       </header>
       <div ref={trackRef} className="splide__track">
         <ul className="splide__list">
-          {items.map((item) => (
-            <li key={item.id} className="splide__slide">
-              <Link href={getLink(item.type, item.id,item.season_number!)}
-                as={getLink(item.type, item.id,item.season_number!)}>
+          {items.map((item, index) => (
+            <li key={item.type + item.id + index} className="splide__slide">
+              <Link href={getLink(item.type, item.id,item.season_number!)}>
                 <Image
                   className={styles.image}
                   priority={true}
